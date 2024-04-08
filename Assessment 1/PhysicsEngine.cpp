@@ -23,48 +23,28 @@ namespace PhysicsEngine
 	///PhysX functions
 	void PxInit()
 	{
-		//foundation
 		if (!foundation) {
-#if PX_PHYSICS_VERSION < 0x304000 // SDK 3.3
-			foundation = PxCreateFoundation(PX_PHYSICS_VERSION, gDefaultAllocatorCallback, gDefaultErrorCallback);
-#else
 			foundation = PxCreateFoundation(PX_FOUNDATION_VERSION, gDefaultAllocatorCallback, gDefaultErrorCallback);
-#endif
 		}
-
 		if (!foundation)
 			throw new Exception("PhysicsEngine::PxInit, Could not create the PhysX SDK foundation.");
 
-		//visual debugger
 		if (!pvd) {
-#if PX_PHYSICS_VERSION < 0x304000 // SDK 3.3
-			pvd = PxVisualDebuggerExt::createConnection(physics->getPvdConnectionManager(), "localhost", 5425, 100,
-				PxVisualDebuggerExt::getAllConnectionFlags());
-#else
 			pvd = PxCreatePvd(*foundation);
 			PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate("localhost", 5425, 10);
 			pvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
-#endif
 		}
 
-		//physics
 		if (!physics)
-#if PX_PHYSICS_VERSION < 0x304000 // SDK 3.3
-			physics = PxCreatePhysics(PX_PHYSICS_VERSION, *foundation, PxTolerancesScale());
-#else
 			physics = PxCreatePhysics(PX_PHYSICS_VERSION, *foundation, PxTolerancesScale(), true, pvd);
-#endif
-
 		if (!physics)
 			throw new Exception("PhysicsEngine::PxInit, Could not initialise the PhysX SDK.");
 
 		if (!cooking)
 			cooking = PxCreateCooking(PX_PHYSICS_VERSION, *foundation, PxCookingParams(PxTolerancesScale()));
-
 		if (!cooking)
 			throw new Exception("PhysicsEngine::PxInit, Could not initialise the cooking component.");
 
-		//create a deafult material
 		CreateMaterial();
 	}
 

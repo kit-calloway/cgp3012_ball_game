@@ -27,6 +27,7 @@
     <ClInclude Include="Extras\HUD.h" />
     <ClInclude Include="Extras\Renderer.h" />
     <ClInclude Include="Extras\UserData.h" />
+    <ClInclude Include="include\CarFootball.h" />
     <ClInclude Include="MyPhysicsEngine.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="VisualDebugger.h" />
@@ -36,6 +37,7 @@
     <ClCompile Include="Extras\GLFontRenderer.cpp" />
     <ClCompile Include="Extras\Renderer.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
+    <ClCompile Include="src\CarFootball.cpp" />
     <ClCompile Include="VisualDebugger.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -113,7 +115,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(PHYSX_SDK)\include;$(PHYSX_SDK)\..\PxShared\include;.\Graphics\include\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;$(PHYSX_SDK)\include;$(PHYSX_SDK)\..\PxShared\include;.\Graphics\include\win32</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
