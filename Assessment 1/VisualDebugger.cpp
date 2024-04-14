@@ -132,6 +132,9 @@ namespace VisualDebugger
 		//handle pressed keys
 		KeyHold();
 
+		// Adjust camera
+		MoveCamera();
+
 		//start rendering
 		Renderer::Start(camera->getEye(), camera->getDir());
 
@@ -199,32 +202,12 @@ namespace VisualDebugger
 	{
 	}
 
-	//handle camera control keys
-	void CameraInput(int key)
+	// Updates the camera's position
+	void MoveCamera()
 	{
-		switch (toupper(key))
-		{
-		case 'W':
-			//camera->MoveForward(delta_time);
-			break;
-		case 'S':
-			//camera->MoveBackward(delta_time);
-			break;
-		case 'A':
-			//camera->MoveLeft(delta_time);
-			break;
-		case 'D':
-			//camera->MoveRight(delta_time);
-			break;
-		case 'Q':
-			//camera->MoveUp(delta_time);
-			break;
-		case 'Z':
-			//camera->MoveDown(delta_time);
-			break;
-		default:
-			break;
-		}
+		auto carPose = scene->car->GetDynamic()->getGlobalPose();
+		camera->setEye(carPose.p + carPose.q.rotate(scene->cameraOffset));
+		camera->setDir(carPose.q.getBasisVector2());
 	}
 
 	//handle force control keys
@@ -339,7 +322,6 @@ namespace VisualDebugger
 		{
 			if (key_state[i]) // if key down
 			{
-				CameraInput(i);
 				ForceInput(i);
 				UserKeyHold(i);
 			}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BasicActors.h"
+#include "VisualDebugger.h"
 #include <iostream>
 #include <iomanip>
 
@@ -194,6 +195,7 @@ namespace PhysicsEngine
 		MySimulationEventCallback* my_callback;
 		
 	public:
+		PxVec3 cameraOffset{ 0, 1, -5 };
 		Box* car;
 		Sphere* ball;
 

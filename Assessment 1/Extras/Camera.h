@@ -54,5 +54,9 @@ namespace VisualDebugger
 
 		///move camera down
 		void MoveDown(PxReal delta_time);
+
+		void setEye(PxVec3 newEye);
+
+		void setDir(PxVec3 newDir);
 	};
 }

@@ -90,4 +90,12 @@ namespace VisualDebugger
 	{
 		eye -= PxVec3(0,1,0)*speed*delta_time; 
 	}
+	void Camera::setEye(PxVec3 newEye)
+	{
+		eye = newEye;
+	}
+	void Camera::setDir(PxVec3 newDir)
+	{
+		dir = newDir;
+	}
 }

@@ -11,5 +11,7 @@ namespace VisualDebugger
 
 	///Start visualisation
 	void Start();
+
+	void MoveCamera();
 }
 
