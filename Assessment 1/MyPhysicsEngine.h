@@ -234,7 +234,7 @@ namespace PhysicsEngine
 
 	public:
 		Car(Scene& scene, physx::PxTransform transform) {
-			body = new Box{ transform };
+			body = new CarBody{ transform };
 			body->Color(color_palette[4]); // Teal
 			body->Name("CarBody");
 			auto material = GetPhysics()->createMaterial(0.5, 0.5, 0.65);
