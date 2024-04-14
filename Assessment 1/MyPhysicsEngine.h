@@ -191,16 +191,16 @@ namespace PhysicsEngine
 
 	class Car
 	{
-		PhysicsEngine::DynamicActor* body;
+		DynamicActor* body;
 
 	public:
-		Car(PhysicsEngine::Scene& scene, physx::PxTransform transform) {
-			body = new PhysicsEngine::Box{ transform };
-			body->Color(PhysicsEngine::color_palette[4]); // Teal
+		Car(Scene& scene, physx::PxTransform transform) {
+			body = new Box{ transform };
+			body->Color(color_palette[4]); // Teal
 			body->Name("CarBody");
 			scene.Add(body);
 		}
-		PhysicsEngine::PxRigidDynamic* GetActor() {
+		PxRigidDynamic* GetActor() {
 			return body->GetDynamic();
 		}
 	};
