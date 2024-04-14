@@ -15,7 +15,8 @@ namespace PhysicsEngine
 		PxVec3(217.0f / 255.0f,   0.0f / 255.0f,   0.0f / 255.0f), // Watermelon
 		PxVec3(255.0f / 255.0f,  45.0f / 255.0f,   0.0f / 255.0f), // Orange
 		PxVec3(255.0f / 255.0f, 140.0f / 255.0f,  54.0f / 255.0f), // Yellow
-		PxVec3(  4.0f / 255.0f, 117.0f / 255.0f, 111.0f / 255.0f)  // Teal
+		PxVec3(  4.0f / 255.0f, 117.0f / 255.0f, 111.0f / 255.0f), // Teal
+		PxVec3(0, 0.5, 0) // Grass
 	};
 
 	//pyramid vertices
@@ -46,10 +47,8 @@ namespace PhysicsEngine
 	{
 		enum Enum
 		{
-			ACTOR0		= (1 << 0),
-			ACTOR1		= (1 << 1),
-			ACTOR2		= (1 << 2)
-			//add more if you need
+			CAR_BODY   = (1 << 0),
+			CAR_WHEELS = (1 << 1),
 		};
 	};
 
@@ -160,13 +159,13 @@ namespace PhysicsEngine
 		PxPairFlags& pairFlags,	const void* constantBlock,	PxU32 constantBlockSize)
 	{
 		// let triggers through
-		if(PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
-		{
-			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
-			return PxFilterFlags();
-		}
+		//if(PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
+		//{
+			//pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+			//return PxFilterFlags();
+		//}
 
-		pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+		//pairFlags = PxPairFlag::eCONTACT_DEFAULT;
 		//enable continous collision detection
 //		pairFlags |= PxPairFlag::eCCD_LINEAR;
 		
@@ -176,15 +175,17 @@ namespace PhysicsEngine
 
 		// trigger the contact callback for pairs (A,B) where 
 		// the filtermask of A contains the ID of B and vice versa.
-		if((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+		if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
 		{
-			//trigger onContact callback for this pair of objects
-			pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
-			pairFlags |= PxPairFlag::eNOTIFY_TOUCH_LOST;
-//			pairFlags |= PxPairFlag::eNOTIFY_CONTACT_POINTS;
+			cout << "You did good!" << endl;
+			return PxFilterFlag::eSUPPRESS;
 		}
 
-		return PxFilterFlags();
+		return PxDefaultSimulationFilterShader(
+			attributes0, filterData0,
+			attributes1, filterData1,
+			pairFlags, constantBlock, constantBlockSize
+		);
 	};
 
 
@@ -203,9 +204,17 @@ namespace PhysicsEngine
 	class Car
 	{
 		DynamicActor* body;
+		DynamicActor* wheels[4];
+		PxVec3 wheelOffsets[4]{
+			PxVec3{  2.5, 0,  2.5 },
+			PxVec3{ -2.5, 0,  2.5 },
+			PxVec3{  2.5, 0, -2.5 },
+			PxVec3{ -2.5, 0, -2.5 },
+		};
 		CarGear gear = CarGear::Neutral;
 		PxReal targetSpeed{ 10 };
 		PxReal accelerationMultiplier{ 100'000 };
+		
 		
 
 		/// <summary>
@@ -236,12 +245,29 @@ namespace PhysicsEngine
 		PxVec3 cameraOffset{ 0, 1, -3 };
 
 		Car(Scene& scene, physx::PxTransform transform) {
+			// Body
 			body = new CarBody{ transform };
 			body->Color(color_palette[4]); // Teal
 			body->Name("CarBody");
 			auto material = GetPhysics()->createMaterial(0.5, 0.5, 0.65);
 			body->Material(material);
+			body->SetupFiltering(FilterGroup::CAR_BODY, FilterGroup::CAR_WHEELS);
 			scene.Add(body);
+			// Wheels
+			material = GetPhysics()->createMaterial(0.8, 0.8, 0.65);
+			for (int wheelNumber = 0; wheelNumber < 4; wheelNumber++)
+			{
+				wheels[wheelNumber] = new Sphere{ 
+					PxTransform{ 
+						transform.p + wheelOffsets[wheelNumber],
+						transform.q
+					},
+				};
+				wheels[wheelNumber]->Name("CarWheel" + wheelNumber);
+				wheels[wheelNumber]->Material(material);
+				wheels[wheelNumber]->SetupFiltering(FilterGroup::CAR_WHEELS, FilterGroup::CAR_BODY);
+				scene.Add(wheels[wheelNumber]);
+			}
 		}
 		~Car()
 		{
@@ -292,7 +318,7 @@ namespace PhysicsEngine
 
 		//specify your custom filter shader here
 		//PxDefaultSimulationFilterShader by default
-		MyScene() : Scene() {};
+		MyScene() : Scene(CustomFilterShader) {};
 
 		///A custom scene class
 		void SetVisualisation()
@@ -316,6 +342,7 @@ namespace PhysicsEngine
 			plane->Color(PxVec3(210.f/255.f,210.f/255.f,210.f/255.f));
 			auto planeMaterial = GetPhysics()->createMaterial(0.5, 0.4, 0.2);
 			plane->Material(planeMaterial);
+			plane->Color(color_palette[5]);
 			Add(plane);
 
 			// Create ball

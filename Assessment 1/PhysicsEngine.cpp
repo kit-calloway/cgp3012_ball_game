@@ -254,7 +254,7 @@ namespace PhysicsEngine
 			sceneDesc.cpuDispatcher = mCpuDispatcher;
 		}
 
-		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+		sceneDesc.filterShader = filter_shader;
 
 		px_scene = GetPhysics()->createScene(sceneDesc);
 
