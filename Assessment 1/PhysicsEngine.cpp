@@ -184,7 +184,8 @@ namespace PhysicsEngine
 
 	DynamicActor::DynamicActor(const PxTransform& pose) : Actor()
 	{
-		actor = (PxActor*)GetPhysics()->createRigidDynamic(pose);
+		dynamicActor = GetPhysics()->createRigidDynamic(pose);
+		actor = dynamicActor;
 		Name("");
 	}
 
@@ -192,6 +193,11 @@ namespace PhysicsEngine
 	{
 		for (unsigned int i = 0; i < colors.size(); i++)
 			delete (UserData*)GetShape(i)->userData;
+	}
+
+	PxRigidDynamic* DynamicActor::GetDynamic()
+	{
+		return dynamicActor;
 	}
 
 	void DynamicActor::CreateShape(const PxGeometry& geometry, PxReal density)
@@ -311,13 +317,8 @@ namespace PhysicsEngine
 
 	void Scene::SelectNextActor()
 	{
-#if PX_PHYSICS_VERSION < 0x304000 // SDK 3.3
-		std::vector<PxRigidDynamic*> actors(px_scene->getNbActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC));
-		if (actors.size() && (px_scene->getActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC, (PxActor**)&actors.front(), (PxU32)actors.size())))
-#else
 		std::vector<PxRigidDynamic*> actors(px_scene->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC));
 		if (actors.size() && (px_scene->getActors(PxActorTypeFlag::eRIGID_DYNAMIC, (PxActor**)&actors.front(), (PxU32)actors.size())))
-#endif
 		{
 			if (selected_actor)
 			{
@@ -342,13 +343,8 @@ namespace PhysicsEngine
 
 	std::vector<PxActor*> Scene::GetAllActors()
 	{
-#if PX_PHYSICS_VERSION < 0x304000 // SDK 3.3
-		physx::PxActorTypeSelectionFlags selection_flag = PxActorTypeSelectionFlag::eRIGID_DYNAMIC | PxActorTypeSelectionFlag::eRIGID_STATIC |
-			PxActorTypeSelectionFlag::eCLOTH;
-#else
 		physx::PxActorTypeFlags selection_flag = PxActorTypeFlag::eRIGID_DYNAMIC | PxActorTypeFlag::eRIGID_STATIC |
 			PxActorTypeFlag::eCLOTH;
-#endif
 		std::vector<PxActor*> actors(px_scene->getNbActors(selection_flag));
 		px_scene->getActors(selection_flag, (PxActor**)&actors.front(), (PxU32)actors.size());
 		return actors;

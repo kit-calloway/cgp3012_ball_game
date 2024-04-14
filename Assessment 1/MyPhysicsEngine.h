@@ -9,8 +9,13 @@ namespace PhysicsEngine
 	using namespace std;
 
 	//a list of colours: Circus Palette
-	static const PxVec3 color_palette[] = {PxVec3(46.f/255.f,9.f/255.f,39.f/255.f),PxVec3(217.f/255.f,0.f/255.f,0.f/255.f),
-		PxVec3(255.f/255.f,45.f/255.f,0.f/255.f),PxVec3(255.f/255.f,140.f/255.f,54.f/255.f),PxVec3(4.f/255.f,117.f/255.f,111.f/255.f)};
+	static const PxVec3 color_palette[] = {
+		PxVec3( 46.0f / 255.0f,   9.0f / 255.0f,  39.0f / 255.0f), // Purple
+		PxVec3(217.0f / 255.0f,   0.0f / 255.0f,   0.0f / 255.0f), // Watermelon
+		PxVec3(255.0f / 255.0f,  45.0f / 255.0f,   0.0f / 255.0f), // Orange
+		PxVec3(255.0f / 255.0f, 140.0f / 255.0f,  54.0f / 255.0f), // Yellow
+		PxVec3(  4.0f / 255.0f, 117.0f / 255.0f, 111.0f / 255.0f)  // Teal
+	};
 
 	//pyramid vertices
 	static PxVec3 pyramid_verts[] = {PxVec3(0,1,0), PxVec3(1,0,0), PxVec3(-1,0,0), PxVec3(0,0,1), PxVec3(0,0,-1)};
@@ -185,10 +190,13 @@ namespace PhysicsEngine
 	class MyScene : public Scene
 	{
 		Plane* plane;
-		Box* box, * box2;
+		
 		MySimulationEventCallback* my_callback;
 		
 	public:
+		Box* car;
+		Sphere* ball;
+
 		//specify your custom filter shader here
 		//PxDefaultSimulationFilterShader by default
 		MyScene() : Scene() {};
@@ -215,16 +223,25 @@ namespace PhysicsEngine
 			plane->Color(PxVec3(210.f/255.f,210.f/255.f,210.f/255.f));
 			Add(plane);
 
-			box = new Box(PxTransform(PxVec3(.0f,.5f,.0f)));
-			box->Color(color_palette[0]);
+			// Create ball
+			ball = new Sphere(
+				PxTransform{ PxVec3{ 0.0, 0.5, 0.5 } },
+				0.5,
+				1);
+			ball->Color(color_palette[2]); // Watermelon
+			ball->Name("Ball");
+			Add(ball);
+
+			car = new Box(PxTransform(PxVec3(.0f,.5f,.0f)));
+			car->Color(color_palette[4]); // Teal
 			//set collision filter flags
 			// box->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1);
 			//use | operator to combine more actors e.g.
 			// box->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1 | FilterGroup::ACTOR2);
 			//don't forget to set your flags for the matching actor as well, e.g.:
 			// box2->SetupFiltering(FilterGroup::ACTOR1, FilterGroup::ACTOR0);
-			box->Name("Box1");
-			Add(box);
+			car->Name("Car");
+			Add(car);
 
 			/*
 			//joint two boxes together

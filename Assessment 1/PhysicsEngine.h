@@ -72,10 +72,14 @@ namespace PhysicsEngine
 
 	class DynamicActor : public Actor
 	{
+		PxRigidDynamic* dynamicActor;
+
 	public:
 		DynamicActor(const PxTransform& pose);
 
 		~DynamicActor();
+
+		PxRigidDynamic* GetDynamic();
 
 		void CreateShape(const PxGeometry& geometry, PxReal density);
 

@@ -205,22 +205,22 @@ namespace VisualDebugger
 		switch (toupper(key))
 		{
 		case 'W':
-			camera->MoveForward(delta_time);
+			//camera->MoveForward(delta_time);
 			break;
 		case 'S':
-			camera->MoveBackward(delta_time);
+			//camera->MoveBackward(delta_time);
 			break;
 		case 'A':
-			camera->MoveLeft(delta_time);
+			//camera->MoveLeft(delta_time);
 			break;
 		case 'D':
-			camera->MoveRight(delta_time);
+			//camera->MoveRight(delta_time);
 			break;
 		case 'Q':
-			camera->MoveUp(delta_time);
+			//camera->MoveUp(delta_time);
 			break;
 		case 'Z':
-			camera->MoveDown(delta_time);
+			//camera->MoveDown(delta_time);
 			break;
 		default:
 			break;
@@ -235,24 +235,18 @@ namespace VisualDebugger
 
 		switch (toupper(key))
 		{
-			// Force controls on the selected actor
-		case 'I': //forward
-			scene->GetSelectedActor()->addForce(PxVec3(0,0,-1)*gForceStrength);
+			// Force controls on the scene's car
+		case 'W': // forward
+			scene->car->GetDynamic()->addForce(PxVec3(0, 0, -1) * gForceStrength);
 			break;
-		case 'K': //backward
-			scene->GetSelectedActor()->addForce(PxVec3(0,0,1)*gForceStrength);
+		case 'S': // backward
+			scene->car->GetDynamic()->addForce(PxVec3(0, 0, 1) * gForceStrength);
 			break;
-		case 'J': //left
-			scene->GetSelectedActor()->addForce(PxVec3(-1,0,0)*gForceStrength);
+		case 'A': // left
+			scene->car->GetDynamic()->addForce(PxVec3(-1,0,0)*gForceStrength);
 			break;
-		case 'L': //right
-			scene->GetSelectedActor()->addForce(PxVec3(1,0,0)*gForceStrength);
-			break;
-		case 'U': //up
-			scene->GetSelectedActor()->addForce(PxVec3(0,1,0)*gForceStrength);
-			break;
-		case 'M': //down
-			scene->GetSelectedActor()->addForce(PxVec3(0,-1,0)*gForceStrength);
+		case 'D': // right
+			scene->car->GetDynamic()->addForce(PxVec3(1,0,0)*gForceStrength);
 			break;
 		default:
 			break;
