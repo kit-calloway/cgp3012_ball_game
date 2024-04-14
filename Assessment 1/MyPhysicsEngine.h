@@ -187,6 +187,26 @@ namespace PhysicsEngine
 		return PxFilterFlags();
 	};
 
+
+
+	class Car
+	{
+		PhysicsEngine::DynamicActor* body;
+
+	public:
+		Car(PhysicsEngine::Scene& scene, physx::PxTransform transform) {
+			body = new PhysicsEngine::Box{ transform };
+			body->Color(PhysicsEngine::color_palette[4]); // Teal
+			body->Name("CarBody");
+			scene.Add(body);
+		}
+		PhysicsEngine::PxRigidDynamic* GetActor() {
+			return body->GetDynamic();
+		}
+	};
+
+
+
 	///Custom scene class
 	class MyScene : public Scene
 	{
@@ -196,7 +216,7 @@ namespace PhysicsEngine
 		
 	public:
 		PxVec3 cameraOffset{ 0, 1, -5 };
-		Box* car;
+		Car* car;
 		Sphere* ball;
 
 		//specify your custom filter shader here
@@ -234,16 +254,19 @@ namespace PhysicsEngine
 			ball->Name("Ball");
 			Add(ball);
 
-			car = new Box(PxTransform(PxVec3(.0f,.5f,.0f)));
-			car->Color(color_palette[4]); // Teal
+			car = new Car(
+				*this,
+				PxTransform {
+					PxVec3 { 0, 0.5, 0 }
+				}
+			);
+
 			//set collision filter flags
 			// box->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1);
 			//use | operator to combine more actors e.g.
 			// box->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1 | FilterGroup::ACTOR2);
 			//don't forget to set your flags for the matching actor as well, e.g.:
 			// box2->SetupFiltering(FilterGroup::ACTOR1, FilterGroup::ACTOR0);
-			car->Name("Car");
-			Add(car);
 
 			/*
 			//joint two boxes together

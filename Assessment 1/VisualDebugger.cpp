@@ -205,7 +205,7 @@ namespace VisualDebugger
 	// Updates the camera's position
 	void MoveCamera()
 	{
-		auto carPose = scene->car->GetDynamic()->getGlobalPose();
+		auto carPose = scene->car->GetActor()->getGlobalPose();
 		camera->setEye(carPose.p + carPose.q.rotate(scene->cameraOffset));
 		camera->setDir(carPose.q.getBasisVector2());
 	}
@@ -220,7 +220,7 @@ namespace VisualDebugger
 		// BasisVector0: Right
 		// BasisVector1: Up
 		// BasisVector2: Forward
-		auto carActor = scene->car->GetDynamic();
+		auto carActor = scene->car->GetActor();
 		auto forwardVector = carActor->getGlobalPose().q.getBasisVector2();
 		auto upVector = carActor->getGlobalPose().q.getBasisVector1();
 		switch (toupper(key))
