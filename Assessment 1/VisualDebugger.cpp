@@ -233,20 +233,33 @@ namespace VisualDebugger
 		if (!scene->GetSelectedActor())
 			return;
 
+		auto forwardVector = scene->car->GetDynamic()->getGlobalPose().q.getBasisVector2();
+		auto upVector = scene->car->GetDynamic()->getGlobalPose().q.getBasisVector1();
 		switch (toupper(key))
 		{
 			// Force controls on the scene's car
+			// BasisVector0: Right
+			// BasisVector1: Up
+			// BasisVector2: Forward
 		case 'W': // forward
-			scene->car->GetDynamic()->addForce(PxVec3(0, 0, -1) * gForceStrength);
+			scene->car->GetDynamic()->addForce(
+				forwardVector * gForceStrength
+			);
 			break;
 		case 'S': // backward
-			scene->car->GetDynamic()->addForce(PxVec3(0, 0, 1) * gForceStrength);
+			scene->car->GetDynamic()->addForce(
+				-forwardVector * gForceStrength
+			);
 			break;
 		case 'A': // left
-			scene->car->GetDynamic()->addForce(PxVec3(-1,0,0)*gForceStrength);
+			scene->car->GetDynamic()->addTorque(
+				upVector * gForceStrength
+			);
 			break;
 		case 'D': // right
-			scene->car->GetDynamic()->addForce(PxVec3(1,0,0)*gForceStrength);
+			scene->car->GetDynamic()->addTorque(
+				-upVector * gForceStrength
+			);
 			break;
 		default:
 			break;
