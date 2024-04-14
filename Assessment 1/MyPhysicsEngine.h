@@ -204,9 +204,9 @@ namespace PhysicsEngine
 	{
 		DynamicActor* body;
 		CarGear gear = CarGear::Neutral;
-		PxReal targetSpeed{ 4 };
-		PxReal accelerationMultiplier{ 1'000 };
-		PxVec3 cameraOffset{ 0, 1, -5 };
+		PxReal targetSpeed{ 10 };
+		PxReal accelerationMultiplier{ 100'000 };
+		
 
 		/// <summary>
 		/// Applies force appropriately to reach target speed if necessary.
@@ -233,6 +233,8 @@ namespace PhysicsEngine
 		}
 
 	public:
+		PxVec3 cameraOffset{ 0, 1, -3 };
+
 		Car(Scene& scene, physx::PxTransform transform) {
 			body = new CarBody{ transform };
 			body->Color(color_palette[4]); // Teal
@@ -285,7 +287,6 @@ namespace PhysicsEngine
 		MySimulationEventCallback* my_callback;
 		
 	public:
-		PxVec3 cameraOffset{ 0, 1, -5 };
 		Car* car;
 		Sphere* ball;
 
@@ -329,7 +330,7 @@ namespace PhysicsEngine
 			car = new Car(
 				*this,
 				PxTransform {
-					PxVec3 { 0, 0.5, 0 }
+					PxVec3 { 0, 0.5, -5 }
 				}
 			);
 

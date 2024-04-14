@@ -215,7 +215,8 @@ namespace VisualDebugger
 	void MoveCamera()
 	{
 		auto carPose = scene->car->GetActor()->getGlobalPose();
-		camera->setEye(carPose.p + carPose.q.rotate(scene->cameraOffset));
+		auto cameraOffset = scene->car->cameraOffset;
+		camera->setEye(carPose.p + carPose.q.rotate(cameraOffset) * cameraOffset.magnitude());
 		camera->setDir(carPose.q.getBasisVector2());
 	}
 
@@ -241,12 +242,12 @@ namespace VisualDebugger
 			break;
 		case 'A': // left
 			car->GetActor()->addTorque(
-				upVector * gForceStrength
+				upVector * gForceStrength * 250
 			);
 			break;
 		case 'D': // right
 			car->GetActor()->addTorque(
-				-upVector * gForceStrength
+				-upVector * gForceStrength * 250
 			);
 			break;
 		default:
