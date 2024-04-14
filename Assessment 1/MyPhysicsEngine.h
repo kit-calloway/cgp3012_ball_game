@@ -188,20 +188,90 @@ namespace PhysicsEngine
 	};
 
 
+	/// <summary>
+	/// Represents the gears the car has.
+	/// </summary>
+	enum class CarGear {
+		Forward, // Accelerate until hitting target speed.
+		Neutral, // No force applied.
+		Backward // Accelerate until hitting negative target speed.
+	};
 
+	/// <summary>
+	/// Container for car behaviour.
+	/// </summary>
 	class Car
 	{
 		DynamicActor* body;
+		CarGear gear = CarGear::Neutral;
+		PxReal targetSpeed{ 4 };
+		PxReal accelerationMultiplier{ 1'000 };
+		PxVec3 cameraOffset{ 0, 1, -5 };
+
+		/// <summary>
+		/// Applies force appropriately to reach target speed if necessary.
+		/// </summary>
+		/// <param name="deltaTime">Time passed since last update</param>
+		void UpdateForce(PxReal deltaTime) {
+			PxReal speed = body->GetDynamic()->getLinearVelocity().magnitude();
+			if (speed > targetSpeed) // NOTE: This doesn't account for external forces (i.e. collisions) but is sufficient for this simulation.
+				return;
+			auto forwardVector = body->GetDynamic()->getGlobalPose().q.getBasisVector2();
+			switch (gear)
+			{
+			case CarGear::Forward:
+				body->GetDynamic()->addForce(forwardVector * deltaTime * accelerationMultiplier);
+				break;
+			case CarGear::Neutral:
+				break;
+			case CarGear::Backward:
+				body->GetDynamic()->addForce(-forwardVector * deltaTime * accelerationMultiplier);
+				break;
+			default:
+				break;
+			}
+		}
 
 	public:
 		Car(Scene& scene, physx::PxTransform transform) {
 			body = new Box{ transform };
 			body->Color(color_palette[4]); // Teal
 			body->Name("CarBody");
+			auto material = GetPhysics()->createMaterial(0.5, 0.5, 0.65);
+			body->Material(material);
 			scene.Add(body);
 		}
+		~Car()
+		{
+			body->~DynamicActor();
+		}
+
+		void Update(PxReal deltaTime) {
+			UpdateForce(deltaTime);
+		}
+
+		/// <summary>
+		/// Gets the actor associated with the body of the car. This is, in effect, the primary part of the car used for determination of position and rotation.
+		/// </summary>
+		/// <returns>A pointer to the RigidDynamic actor instance.</returns>
 		PxRigidDynamic* GetActor() {
 			return body->GetDynamic();
+		}
+
+		/// <summary>
+		/// Get method for the car's gear.
+		/// </summary>
+		/// <returns>Current car gear</returns>
+		CarGear GetGear() {
+			return gear;
+		}
+
+		/// <summary>
+		/// Set method for the car's gear.
+		/// </summary>
+		/// <param name="newGear">New car gear</param>
+		void SetGear(CarGear newGear) {
+			gear = newGear;
 		}
 	};
 
@@ -243,6 +313,8 @@ namespace PhysicsEngine
 
 			plane = new Plane();
 			plane->Color(PxVec3(210.f/255.f,210.f/255.f,210.f/255.f));
+			auto planeMaterial = GetPhysics()->createMaterial(0.5, 0.4, 0.2);
+			plane->Material(planeMaterial);
 			Add(plane);
 
 			// Create ball
@@ -277,8 +349,9 @@ namespace PhysicsEngine
 		}
 
 		//Custom udpate function
-		virtual void CustomUpdate() 
+		virtual void CustomUpdate(PxReal dt) 
 		{
+			car->Update(dt);
 		}
 
 		/// An example use of key release handling

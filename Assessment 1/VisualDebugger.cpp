@@ -126,9 +126,18 @@ namespace VisualDebugger
 		glutMainLoop(); 
 	}
 
+	/// <summary>
+	/// This is necessary to prevent car from accelerating from a single tap of the W or S keys. Why here? Because a certain *somebody* put the update loop in the visual debugger. :P
+	/// </summary>
+	void ResetCarGear() {
+		scene->car->SetGear(PhysicsEngine::CarGear::Neutral);
+	}
+
 	//Render the scene and perform a single simulation step
 	void RenderScene()
 	{
+		ResetCarGear();
+
 		//handle pressed keys
 		KeyHold();
 
@@ -220,28 +229,23 @@ namespace VisualDebugger
 		// BasisVector0: Right
 		// BasisVector1: Up
 		// BasisVector2: Forward
-		auto carActor = scene->car->GetActor();
-		auto forwardVector = carActor->getGlobalPose().q.getBasisVector2();
-		auto upVector = carActor->getGlobalPose().q.getBasisVector1();
+		auto car = scene->car;
+		auto upVector = car->GetActor()->getGlobalPose().q.getBasisVector1();
 		switch (toupper(key))
 		{
 		case 'W': // forward
-			carActor->addForce(
-				forwardVector * gForceStrength
-			);
+			car->SetGear(PhysicsEngine::CarGear::Forward);
 			break;
 		case 'S': // backward
-			carActor->addForce(
-				-forwardVector * gForceStrength
-			);
+			car->SetGear(PhysicsEngine::CarGear::Backward);
 			break;
 		case 'A': // left
-			carActor->addTorque(
+			car->GetActor()->addTorque(
 				upVector * gForceStrength
 			);
 			break;
 		case 'D': // right
-			carActor->addTorque(
+			car->GetActor()->addTorque(
 				-upVector * gForceStrength
 			);
 			break;
