@@ -131,6 +131,7 @@ namespace VisualDebugger
 	/// </summary>
 	void ResetCarGear() {
 		scene->car->SetGear(PhysicsEngine::CarGear::Neutral);
+		scene->car->SetWheelRotation(PhysicsEngine::WheelRotation::Neutral);
 	}
 
 	//Render the scene and perform a single simulation step
@@ -241,14 +242,10 @@ namespace VisualDebugger
 			car->SetGear(PhysicsEngine::CarGear::Backward);
 			break;
 		case 'A': // left
-			car->GetActor()->addTorque(
-				upVector * gForceStrength * 250
-			);
+			car->SetWheelRotation(PhysicsEngine::WheelRotation::Left);
 			break;
 		case 'D': // right
-			car->GetActor()->addTorque(
-				-upVector * gForceStrength * 250
-			);
+			car->SetWheelRotation(PhysicsEngine::WheelRotation::Right);
 			break;
 		default:
 			break;

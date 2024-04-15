@@ -47,8 +47,7 @@ namespace PhysicsEngine
 	{
 		enum Enum
 		{
-			CAR_BODY   = (1 << 0),
-			CAR_WHEELS = (1 << 1),
+			CAR = (1 << 0),
 		};
 	};
 
@@ -177,7 +176,6 @@ namespace PhysicsEngine
 		// the filtermask of A contains the ID of B and vice versa.
 		if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
 		{
-			cout << "You did good!" << endl;
 			return PxFilterFlag::eSUPPRESS;
 		}
 
@@ -199,6 +197,15 @@ namespace PhysicsEngine
 	};
 
 	/// <summary>
+	/// Represents whether or not the car is turning.
+	/// </summary>
+	enum class WheelRotation {
+		Left,     // Rotate wheel left until hitting limit.
+		Neutral,  // No rotation applied
+		Right,    // Rotate wheel right until hitting limit.
+	};
+
+	/// <summary>
 	/// Container for car behaviour.
 	/// </summary>
 	class Car
@@ -206,15 +213,20 @@ namespace PhysicsEngine
 		DynamicActor* body;
 		DynamicActor* wheels[4];
 		PxVec3 wheelOffsets[4]{
-			PxVec3{  2.5, 0,  2.5 },
-			PxVec3{ -2.5, 0,  2.5 },
-			PxVec3{  2.5, 0, -2.5 },
-			PxVec3{ -2.5, 0, -2.5 },
+			PxVec3{  1, -0.25,  1.5 },
+			PxVec3{ -1, -0.25,  1.5 },
+			PxVec3{  1, -0.25, -1.5 },
+			PxVec3{ -1, -0.25, -1.5 },
 		};
-		CarGear gear = CarGear::Neutral;
-		PxReal targetSpeed{ 10 };
-		PxReal accelerationMultiplier{ 100'000 };
-		
+		DistanceJoint* wheelSprings[4];
+		RevoluteJoint* wheelMotors[4];
+		CarGear gear{ CarGear::Neutral };
+		PxReal targetSpeed{ 50 };
+		PxReal acceleration{ 10 };
+		PxReal deacceleration{ 20 };
+		WheelRotation wheelRotation{ WheelRotation::Neutral };
+		PxReal wheelAngleLimit{ PxPi / 6 }; // 15 degrees
+		PxReal rotationSpeed{ 10 };
 		
 
 		/// <summary>
@@ -222,19 +234,36 @@ namespace PhysicsEngine
 		/// </summary>
 		/// <param name="deltaTime">Time passed since last update</param>
 		void UpdateForce(PxReal deltaTime) {
-			PxReal speed = body->GetDynamic()->getLinearVelocity().magnitude();
-			if (speed > targetSpeed) // NOTE: This doesn't account for external forces (i.e. collisions) but is sufficient for this simulation.
-				return;
-			auto forwardVector = body->GetDynamic()->getGlobalPose().q.getBasisVector2();
+			PxReal speed = GetSpeed();
 			switch (gear)
 			{
 			case CarGear::Forward:
-				body->GetDynamic()->addForce(forwardVector * deltaTime * accelerationMultiplier);
+				SetSpeed(speed + acceleration * deltaTime);
 				break;
 			case CarGear::Neutral:
+				SetSpeed(PxClamp<PxReal>(speed - deacceleration * deltaTime, 0, 66535));
 				break;
 			case CarGear::Backward:
-				body->GetDynamic()->addForce(-forwardVector * deltaTime * accelerationMultiplier);
+				SetSpeed(speed - acceleration * deltaTime);
+				break;
+			default:
+				break;
+			}
+		}
+
+		void UpdateWheelAngle(PxReal deltaTime) {
+			PxReal angle = GetWheelAngle();
+			cout << angle << endl;
+			switch (wheelRotation)
+			{
+			case WheelRotation::Left:
+				SetWheelAngle(angle + rotationSpeed * deltaTime);
+				break;
+			case WheelRotation::Neutral:
+				SetWheelAngle(PxClamp<PxReal>(angle - rotationSpeed * deltaTime, 0, 2 * PxPi));
+				break;
+			case WheelRotation::Right:
+				SetWheelAngle(angle - rotationSpeed * deltaTime);
 				break;
 			default:
 				break;
@@ -251,21 +280,39 @@ namespace PhysicsEngine
 			body->Name("CarBody");
 			auto material = GetPhysics()->createMaterial(0.5, 0.5, 0.65);
 			body->Material(material);
-			body->SetupFiltering(FilterGroup::CAR_BODY, FilterGroup::CAR_WHEELS);
+			body->SetupFiltering(FilterGroup::CAR, FilterGroup::CAR);
 			scene.Add(body);
 			// Wheels
 			material = GetPhysics()->createMaterial(0.8, 0.8, 0.65);
 			for (int wheelNumber = 0; wheelNumber < 4; wheelNumber++)
 			{
-				wheels[wheelNumber] = new Sphere{ 
-					PxTransform{ 
+				// Wheels actor
+				wheels[wheelNumber] = new Sphere{
+					PxTransform{
 						transform.p + wheelOffsets[wheelNumber],
 						transform.q
 					},
+					0.3
 				};
 				wheels[wheelNumber]->Name("CarWheel" + wheelNumber);
 				wheels[wheelNumber]->Material(material);
-				wheels[wheelNumber]->SetupFiltering(FilterGroup::CAR_WHEELS, FilterGroup::CAR_BODY);
+				wheels[wheelNumber]->SetupFiltering(FilterGroup::CAR, FilterGroup::CAR);
+				// Wheels suspension
+				//wheelSprings[wheelNumber] = new DistanceJoint(
+					//body,
+					//PxTransform{ wheelOffsets[wheelNumber] },
+					//wheels[wheelNumber],
+					//PxTransform{ 0, 0, 0 }
+				//);
+				//wheelSprings[wheelNumber]->Damping(1'000);
+				//wheelSprings[wheelNumber]->Stiffness(30'000);
+				// Wheel motors
+				wheelMotors[wheelNumber] = new RevoluteJoint{
+					body,
+					PxTransform{ wheelOffsets[wheelNumber], transform.q },
+					wheels[wheelNumber],
+					PxTransform{ 0, 0, 0 }
+				};
 				scene.Add(wheels[wheelNumber]);
 			}
 		}
@@ -276,6 +323,7 @@ namespace PhysicsEngine
 
 		void Update(PxReal deltaTime) {
 			UpdateForce(deltaTime);
+			UpdateWheelAngle(deltaTime);
 		}
 
 		/// <summary>
@@ -300,6 +348,54 @@ namespace PhysicsEngine
 		/// <param name="newGear">New car gear</param>
 		void SetGear(CarGear newGear) {
 			gear = newGear;
+		}
+
+		/// <summary>
+		/// Gets the current velocity of the car's wheels.
+		/// </summary>
+		/// <returns>The current velocity of the car's wheels.</returns>
+		PxReal GetSpeed() {
+			return wheelMotors[0]->DriveVelocity();
+		}
+
+		/// <summary>
+		/// Sets the velocity of the car's wheels.
+		/// </summary>
+		/// <param name="velocity">The new velocity of the car's wheels</param>
+		void SetSpeed(PxReal velocity) {
+			velocity = PxClamp(velocity, -targetSpeed, targetSpeed);
+			for each (RevoluteJoint* motor in wheelMotors) {
+				motor->DriveVelocity(velocity);
+			}
+		}
+
+		WheelRotation GetWheelRotation() {
+			return wheelRotation;
+		}
+
+		void SetWheelRotation(WheelRotation newWheelRotation) {
+			wheelRotation = newWheelRotation;
+		}
+
+		PxReal GetWheelAngle() {
+			return wheelMotors[0]->Get()->getLocalPose(PxJointActorIndex::eACTOR0).q.y;
+		}
+
+		void SetWheelAngle(PxReal newAngle) {
+			newAngle = PxClamp(newAngle, -wheelAngleLimit, wheelAngleLimit);
+			for (size_t wheelNumber = 0; wheelNumber < 2; wheelNumber++) // Only get the front wheels
+			{
+				wheelMotors[wheelNumber]->Get()->setLocalPose(
+					PxJointActorIndex::eACTOR0,
+					PxTransform{
+						wheelOffsets[wheelNumber],
+						PxQuat{
+							newAngle,
+							wheelMotors[wheelNumber]->Get()->getLocalPose(PxJointActorIndex::eACTOR0).q.getBasisVector1()
+						}
+					}
+				);
+			}
 		}
 	};
 
@@ -357,7 +453,7 @@ namespace PhysicsEngine
 			car = new Car(
 				*this,
 				PxTransform {
-					PxVec3 { 0, 0.5, -5 }
+					PxVec3 { 0, 1.5, -5 }
 				}
 			);
 

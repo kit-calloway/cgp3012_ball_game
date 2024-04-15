@@ -209,24 +209,24 @@ namespace PhysicsEngine
 	class CarBody : public DynamicActor
 	{
 	public:
-		CarBody(const PxTransform& pose = PxTransform(PxIdentity), PxReal density = 1.f)
+		CarBody(const PxTransform& pose = PxTransform(PxIdentity), PxReal density = 1)
 			: DynamicActor(pose)
 		{
 			// Bottom Hull (Index 0)
 			CreateShape(
-				PxBoxGeometry{ PxVec3{ 1.5, 0.75, 2.5 } },
+				PxBoxGeometry{ PxVec3{ 0.9, 0.35, 2.25 } },
 				density
 			);
 			GetShape(0)->setLocalPose(
-				PxTransform{ PxVec3{ 0, 0.75, 0 } }
+				PxTransform{ PxVec3{ 0, 0.35, 0 } }
 			);
 			// Top Hull (Index 1)
 			CreateShape(
-				PxBoxGeometry{ PxVec3{ 1.5, 0.75, 1.5 } },
+				PxBoxGeometry{ PxVec3{ 0.9, 0.35, 1 } },
 				density
 			);
 			GetShape(1)->setLocalPose(
-				PxTransform{ PxVec3{ 0, 1.5, 0 } }
+				PxTransform{ PxVec3{ 0, 0.7, 0 } }
 			);
 		}
 	};
