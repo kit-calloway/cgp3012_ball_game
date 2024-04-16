@@ -411,7 +411,7 @@ namespace PhysicsEngine
 	///Custom scene class
 	class MyScene : public Scene
 	{
-		Plane* plane;
+		Field* field;
 		
 		MySimulationEventCallback* my_callback;
 		
@@ -441,12 +441,9 @@ namespace PhysicsEngine
 			my_callback = new MySimulationEventCallback();
 			px_scene->setSimulationEventCallback(my_callback);
 
-			plane = new Plane();
-			plane->Color(PxVec3(210.f/255.f,210.f/255.f,210.f/255.f));
-			auto planeMaterial = GetPhysics()->createMaterial(0.5, 0.4, 0.2);
-			plane->Material(planeMaterial);
-			plane->Color(color_palette[5]);
-			Add(plane);
+			field = new Field(PxVec3{ 10, 10, 10 });
+			field->Color(color_palette[5]); // Green
+			Add(field);
 
 			// Create ball
 			ball = new Sphere(
@@ -463,20 +460,6 @@ namespace PhysicsEngine
 					PxVec3 { 0, 1.5, -5 }
 				}
 			);
-
-			//set collision filter flags
-			// box->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1);
-			//use | operator to combine more actors e.g.
-			// box->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1 | FilterGroup::ACTOR2);
-			//don't forget to set your flags for the matching actor as well, e.g.:
-			// box2->SetupFiltering(FilterGroup::ACTOR1, FilterGroup::ACTOR0);
-
-			/*
-			//joint two boxes together
-			//the joint is fixed to the centre of the first box, oriented by 90 degrees around the Y axis
-			//and has the second object attached 5 meters away along the Y axis from the first object.
-			RevoluteJoint joint(box, PxTransform(PxVec3(0.f,0.f,0.f),PxQuat(PxPi/2,PxVec3(0.f,1.f,0.f))), box2, PxTransform(PxVec3(0.f,5.f,0.f)));
-			*/
 		}
 
 		//Custom udpate function

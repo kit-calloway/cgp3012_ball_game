@@ -242,4 +242,23 @@ namespace PhysicsEngine
 			);
 		}
 	};
+
+	/// <summary>
+	/// This class is used to quickly create the field the game is ran in
+	/// </summary>
+	class Field : public StaticActor {
+	public:
+		Field(const PxVec3 dimensions, const PxTransform& pose = PxTransform{ 0, 0, 0 })
+			: StaticActor(
+				PxTransformFromPlaneEquation(
+					PxPlane{ PxVec3{ 0, 1, 0 }, 0 }
+				)
+			)
+		{
+			CreateShape(PxPlaneGeometry{});
+			Color(PxVec3(210.f / 255.f, 128.f / 255.f, 210.f / 255.f));
+			auto grassMaterial = GetPhysics()->createMaterial(0.5, 0.4, 0.2); // Considered grass friction values
+			Material(grassMaterial);
+		}
+	};
 }
