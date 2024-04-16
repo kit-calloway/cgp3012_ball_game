@@ -25,15 +25,6 @@ namespace PhysicsEngine
 	//vertices have to be specified in a counter-clockwise order to assure the correct shading in rendering
 	static PxU32 pyramid_trigs[] = {1, 4, 0, 3, 1, 0, 2, 3, 0, 4, 2, 0, 3, 2, 1, 2, 4, 1};
 
-	class Pyramid : public ConvexMesh
-	{
-	public:
-		Pyramid(PxTransform pose=PxTransform(PxIdentity), PxReal density=1.f) :
-			ConvexMesh(vector<PxVec3>(begin(pyramid_verts),end(pyramid_verts)), pose, density)
-		{
-		}
-	};
-
 	class PyramidStatic : public TriangleMesh
 	{
 	public:
@@ -225,7 +216,7 @@ namespace PhysicsEngine
 		PxReal acceleration{ 10 };
 		PxReal deacceleration{ 20 };
 		WheelRotation wheelRotation{ WheelRotation::Neutral };
-		PxReal wheelAngleLimit{ PxPi / 6 }; // 15 degrees
+		PxReal wheelAngleLimit{ PxPi / 4 }; // 45 degrees
 		PxReal rotationSpeed{ 10 };
 		
 
@@ -287,12 +278,13 @@ namespace PhysicsEngine
 			for (int wheelNumber = 0; wheelNumber < 4; wheelNumber++)
 			{
 				// Wheels actor
-				wheels[wheelNumber] = new Sphere{
+				wheels[wheelNumber] = new Wheel{
+					0.3,
+					0.4,
 					PxTransform{
 						transform.p + wheelOffsets[wheelNumber],
 						transform.q
 					},
-					0.3
 				};
 				wheels[wheelNumber]->Name("CarWheel" + wheelNumber);
 				wheels[wheelNumber]->Material(material);
@@ -369,18 +361,34 @@ namespace PhysicsEngine
 			}
 		}
 
+		/// <summary>
+		/// Get method for the wheel's rotation enum.
+		/// </summary>
+		/// <returns>Wheel rotation for the vehicle</returns>
 		WheelRotation GetWheelRotation() {
 			return wheelRotation;
 		}
 
+		/// <summary>
+		/// Set method for the wheel's rotation enum
+		/// </summary>
+		/// <param name="newWheelRotation">Wheel rotation for the vehicle</param>
 		void SetWheelRotation(WheelRotation newWheelRotation) {
 			wheelRotation = newWheelRotation;
 		}
 
+		/// <summary>
+		/// Get method for the wheels' current angle
+		/// </summary>
+		/// <returns>Returns an angle in radians</returns>
 		PxReal GetWheelAngle() {
 			return wheelMotors[0]->Get()->getLocalPose(PxJointActorIndex::eACTOR0).q.y;
 		}
 
+		/// <summary>
+		/// Set method for the wheels' current angle
+		/// </summary>
+		/// <param name="newAngle">The new wheel angle (in radians)</param>
 		void SetWheelAngle(PxReal newAngle) {
 			newAngle = PxClamp(newAngle, -wheelAngleLimit, wheelAngleLimit);
 			for (size_t wheelNumber = 0; wheelNumber < 2; wheelNumber++) // Only get the front wheels

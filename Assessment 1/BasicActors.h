@@ -58,14 +58,22 @@ namespace PhysicsEngine
 		}
 	};
 
-	///The ConvexMesh class
-	class ConvexMesh : public DynamicActor
+	///The wheel class (adapted from ConvexMesh class)
+	class Wheel : public DynamicActor
 	{
 	public:
 		//constructor
-		ConvexMesh(const std::vector<PxVec3>& verts, const PxTransform& pose=PxTransform(PxIdentity), PxReal density=1.f)
+		Wheel(const PxReal radius, const PxReal thickness, const PxTransform& pose=PxTransform(PxIdentity), PxReal density=1.f)
 			: DynamicActor(pose)
 		{
+			std::vector<PxVec3> verts;
+			for (PxReal radians = 0; radians < 2 * PxPi; radians += PxPi / 24) { // 7.5 degree increments (48 points)
+				PxVec2 vert2d{ PxSin(radians) * radius, PxCos(radians) * radius };
+				PxVec3 vert3dRight{ thickness / 2, vert2d.y, vert2d.x };
+				PxVec3 vert3dLeft{ -thickness / 2, vert2d.y, vert2d.x };
+				verts.push_back(vert3dRight);
+				verts.push_back(vert3dLeft);
+			}
 			PxConvexMeshDesc mesh_desc;
 			mesh_desc.points.count = (PxU32)verts.size();
 			mesh_desc.points.stride = sizeof(PxVec3);
