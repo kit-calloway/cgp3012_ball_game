@@ -244,7 +244,6 @@ namespace PhysicsEngine
 
 		void UpdateWheelAngle(PxReal deltaTime) {
 			PxReal angle = GetWheelAngle();
-			cout << angle << endl;
 			switch (wheelRotation)
 			{
 			case WheelRotation::Left:
