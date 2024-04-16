@@ -214,6 +214,10 @@ namespace PhysicsEngine
 		}
 	};
 
+	/// <summary>
+	/// This class is used to quickly create the car's body. It creates a compound object from 2 boxes.
+	/// Dimensions are average car dimensions.
+	/// </summary>
 	class CarBody : public DynamicActor
 	{
 	public:
