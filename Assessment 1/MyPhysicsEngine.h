@@ -441,7 +441,7 @@ namespace PhysicsEngine
 			my_callback = new MySimulationEventCallback();
 			px_scene->setSimulationEventCallback(my_callback);
 
-			field = new Field(PxVec3{ 10, 10, 10 });
+			field = new Field(PxVec3{ 100, 2, 100 });
 			field->Color(color_palette[5]); // Green
 			Add(field);
 

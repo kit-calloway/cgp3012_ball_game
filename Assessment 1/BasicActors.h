@@ -247,6 +247,8 @@ namespace PhysicsEngine
 	/// This class is used to quickly create the field the game is ran in
 	/// </summary>
 	class Field : public StaticActor {
+		
+
 	public:
 		Field(const PxVec3 dimensions, const PxTransform& pose = PxTransform{ 0, 0, 0 })
 			: StaticActor(
@@ -255,10 +257,30 @@ namespace PhysicsEngine
 				)
 			)
 		{
+			// Grass
 			CreateShape(PxPlaneGeometry{});
 			Color(PxVec3(210.f / 255.f, 128.f / 255.f, 210.f / 255.f));
 			auto grassMaterial = GetPhysics()->createMaterial(0.5, 0.4, 0.2); // Considered grass friction values
 			Material(grassMaterial);
+
+			// Barriers
+			const PxVec3 barrierDimensions[4]{
+				PxVec3{ dimensions.x / 2, dimensions.y / 2,             0.5f },
+				PxVec3{ dimensions.x / 2, dimensions.y / 2,             0.5f },
+				PxVec3{             0.5f, dimensions.y / 2, dimensions.z / 2 },
+				PxVec3{             0.5f, dimensions.y / 2, dimensions.z / 2 }
+			};
+			const PxTransform barrierTransforms[4]{ // Y dimensions must be negative to account for the adjustment -- otherwise they appear under the map
+				PxTransform{ PxVec3{                     0.0f, -dimensions.y / 2,  dimensions.z / 2 - 0.5f } },
+				PxTransform{ PxVec3{                     0.0f, -dimensions.y / 2, -dimensions.z / 2 + 0.5f } },
+				PxTransform{ PxVec3{  dimensions.x / 2 - 0.5f, -dimensions.y / 2,                     0.0f } },
+				PxTransform{ PxVec3{ -dimensions.x / 2 + 0.5f, -dimensions.y / 2,                     0.0f } },
+			};
+			for (int barrierIndex = 0; barrierIndex < 4; barrierIndex++) {
+				CreateShape(PxBoxGeometry{ barrierDimensions[barrierIndex] });
+				PxTransform adjustedPose = PxTransformFromPlaneEquation(PxPlane{ PxVec3{ 0, 1, 0 }, 0 }) * barrierTransforms[barrierIndex];
+				GetShape(barrierIndex + 1)->setLocalPose(adjustedPose);
+			}
 		}
 	};
 }
