@@ -212,6 +212,9 @@ namespace VisualDebugger
 	void MoveCamera()
 	{
 		auto carPose = scene->car->GetActor()->getGlobalPose();
+		carPose.q.x = 0;
+		carPose.q.z = 0;
+		carPose.p.y = 0;
 		auto cameraOffset = scene->car->cameraOffset;
 		camera->setEye(carPose.p + carPose.q.rotate(cameraOffset) * cameraOffset.magnitude());
 		camera->setDir(carPose.q.getBasisVector2());

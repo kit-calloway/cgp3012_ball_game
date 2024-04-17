@@ -424,7 +424,7 @@ namespace PhysicsEngine
 	{
 		Field* field;
 		Goal* goal;
-		PxReal throwTimer = 2;
+		PxReal throwTimer = 0;
 		
 		MySimulationEventCallback* my_callback;
 		
@@ -488,7 +488,7 @@ namespace PhysicsEngine
 			throwTimer -= dt;
 			if (throwTimer > 0)
 				return;
-			throwTimer += 2;
+			throwTimer += 4;
 			// Actually throwing the obstacle
 			std::random_device rd;
 			std::mt19937 gen{ rd() };
@@ -502,14 +502,14 @@ namespace PhysicsEngine
 				PxTransform{
 					PxVec3{ 0, 5, 10 }
 				};
-			auto obstacle = new Box{
+			auto obstacle = new Sphere{
 				pose,
-				PxVec3{ 1, 1, 1 }
+				0.5
 			};
 			Add(obstacle);
 			auto force = car->GetActor()->getGlobalPose().p - obstacle->GetDynamic()->getGlobalPose().p;
 			cout << force.magnitude() << endl;
-			obstacle->GetDynamic()->addForce(force * 500);
+			obstacle->GetDynamic()->addForce(force * 200);
 		}
 
 		//Custom udpate function
