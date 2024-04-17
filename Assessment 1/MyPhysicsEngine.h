@@ -4,6 +4,7 @@
 #include "VisualDebugger.h"
 #include <iostream>
 #include <iomanip>
+#include <random>
 
 namespace PhysicsEngine
 {
@@ -423,7 +424,7 @@ namespace PhysicsEngine
 	{
 		Field* field;
 		Goal* goal;
-		PxReal throwTimer = 5;
+		PxReal throwTimer = 2;
 		
 		MySimulationEventCallback* my_callback;
 		
@@ -487,10 +488,28 @@ namespace PhysicsEngine
 			throwTimer -= dt;
 			if (throwTimer > 0)
 				return;
-			throwTimer += 5;
+			throwTimer += 2;
 			// Actually throwing the obstacle
-			auto obstacle = new Box{ PxTransform{ PxIdentity }, PxVec3{ 1, 1, 1 } };
+			std::random_device rd;
+			std::mt19937 gen{ rd() };
+			std::uniform_real_distribution<> distribution{ 0, 2 * PxPi };
+			float randomAngle = distribution(gen);
+			auto pose =
+				PxTransform{
+					car->GetActor()->getGlobalPose().p,
+					PxQuat{ randomAngle, PxVec3{ 0, 1, 0 } }
+				} *
+				PxTransform{
+					PxVec3{ 0, 5, 10 }
+				};
+			auto obstacle = new Box{
+				pose,
+				PxVec3{ 1, 1, 1 }
+			};
 			Add(obstacle);
+			auto force = car->GetActor()->getGlobalPose().p - obstacle->GetDynamic()->getGlobalPose().p;
+			cout << force.magnitude() << endl;
+			obstacle->GetDynamic()->addForce(force * 500);
 		}
 
 		//Custom udpate function
