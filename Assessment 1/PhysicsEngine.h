@@ -100,6 +100,7 @@ namespace PhysicsEngine
 	class Scene
 	{
 	protected:
+		
 		//a PhysX scene object
 		PxScene* px_scene;
 		//pause simulation
@@ -116,6 +117,9 @@ namespace PhysicsEngine
 		void HighlightOff(PxRigidDynamic* actor);
 
 	public:
+		// Hacky way of using a flag to reset the scene
+		bool resetScene{ false };
+
 		Scene(PxSimulationFilterShader custom_filter_shader=PxDefaultSimulationFilterShader) : filter_shader(custom_filter_shader) {}
 
 		///Init the scene

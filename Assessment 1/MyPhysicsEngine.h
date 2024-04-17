@@ -83,11 +83,13 @@ namespace PhysicsEngine
 	///A customised collision class, implemneting various callbacks
 	class MySimulationEventCallback : public PxSimulationEventCallback
 	{
+		Scene* scene;
+
 	public:
 		//an example variable that will be checked in the main simulation loop
 		bool trigger;
 
-		MySimulationEventCallback() : trigger(false) {}
+		MySimulationEventCallback(Scene* scene) : trigger(false), scene(scene) {}
 
 		///Method called when the contact with the trigger object is detected.
 		virtual void onTrigger(PxTriggerPair* pairs, PxU32 count) 
@@ -102,7 +104,7 @@ namespace PhysicsEngine
 					if (pairs[i].status & PxPairFlag::eNOTIFY_TOUCH_FOUND)
 					{
 						cerr << "onTrigger::eNOTIFY_TOUCH_FOUND" << endl;
-						trigger = true;
+						scene->resetScene = true; // Win condition
 					}
 					//check if eNOTIFY_TOUCH_LOST trigger
 					if (pairs[i].status & PxPairFlag::eNOTIFY_TOUCH_LOST)
@@ -204,10 +206,10 @@ namespace PhysicsEngine
 		DynamicActor* body;
 		DynamicActor* wheels[4];
 		PxVec3 wheelOffsets[4]{
-			PxVec3{  1, -0.25,  1.5 },
-			PxVec3{ -1, -0.25,  1.5 },
-			PxVec3{  1, -0.25, -1.5 },
-			PxVec3{ -1, -0.25, -1.5 },
+			PxVec3{  1, 0.1,  1.5 },
+			PxVec3{ -1, 0.1,  1.5 },
+			PxVec3{  1, 0.1, -1.5 },
+			PxVec3{ -1, 0.1, -1.5 },
 		};
 		DistanceJoint* wheelSprings[4];
 		RevoluteJoint* wheelMotors[4];
@@ -276,9 +278,9 @@ namespace PhysicsEngine
 			for (int wheelNumber = 0; wheelNumber < 4; wheelNumber++)
 			{
 				// Wheels actor
-				wheels[wheelNumber] = new Wheel{
-					0.3,
+				wheels[wheelNumber] = new Wheel{ // Car wheel dimensions considered - average values chosen
 					0.4,
+					0.2,
 					PxTransform{
 						transform.p + wheelOffsets[wheelNumber],
 						transform.q
@@ -447,7 +449,7 @@ namespace PhysicsEngine
 			GetMaterial()->setDynamicFriction(.2f);
 
 			///Initialise and set the customised event callback
-			my_callback = new MySimulationEventCallback();
+			my_callback = new MySimulationEventCallback(this);
 			px_scene->setSimulationEventCallback(my_callback);
 
 			field = new Field(PxVec3{ 48.76, 2, 91.44 }); // Dimensions of a football field

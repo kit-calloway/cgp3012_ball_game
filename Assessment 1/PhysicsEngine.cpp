@@ -275,6 +275,10 @@ namespace PhysicsEngine
 
 	void Scene::Update(PxReal dt)
 	{
+		if (resetScene) {
+			resetScene = false;
+			Reset();
+		}
 		if (pause)
 			return;
 
