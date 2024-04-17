@@ -408,6 +408,7 @@ namespace PhysicsEngine
 
 	class Goal {
 		GoalPost* goalPost;
+		Box* collider;
 	public:
 		Goal(Scene& scene, PxTransform pose, PxVec3 dimensions) {
 			goalPost = new GoalPost(dimensions, pose);

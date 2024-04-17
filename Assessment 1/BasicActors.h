@@ -307,6 +307,7 @@ namespace PhysicsEngine
 				GetShape(wallIndex)->setLocalPose(wallsTransforms[wallIndex]);
 				Color(PxVec3{ 0.5, 0.5, 0.5 }, wallIndex);
 			}
+			SetTrigger(true, 0);
 		}
 	};
 }
