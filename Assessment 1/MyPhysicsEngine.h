@@ -423,10 +423,12 @@ namespace PhysicsEngine
 	{
 		Field* field;
 		Goal* goal;
+		PxReal throwTimer = 5;
 		
 		MySimulationEventCallback* my_callback;
 		
 	public:
+		bool catastrophe = false; // Toggling of catastrophic element
 		Car* car;
 		Sphere* ball;
 
@@ -478,22 +480,36 @@ namespace PhysicsEngine
 			);
 		}
 
+		void TryThrowObstacle(PxReal dt) {
+			if (!catastrophe)
+				return;
+			// Throw timer handling
+			throwTimer -= dt;
+			if (throwTimer > 0)
+				return;
+			throwTimer += 5;
+			// Actually throwing the obstacle
+			auto obstacle = new Box{ PxTransform{ PxIdentity }, PxVec3{ 1, 1, 1 } };
+			Add(obstacle);
+		}
+
 		//Custom udpate function
 		virtual void CustomUpdate(PxReal dt) 
 		{
 			car->Update(dt);
+			TryThrowObstacle(dt);
 		}
 
 		/// An example use of key release handling
 		void ExampleKeyReleaseHandler()
 		{
-			cerr << "I am realeased!" << endl;
+			cout << "Toggling catastrophic element!" << endl;
+			catastrophe = !catastrophe;
 		}
 
 		/// An example use of key presse handling
 		void ExampleKeyPressHandler()
 		{
-			cerr << "I am pressed!" << endl;
 		}
 	};
 }
