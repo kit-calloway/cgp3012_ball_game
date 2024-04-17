@@ -213,12 +213,11 @@ namespace PhysicsEngine
 		RevoluteJoint* wheelMotors[4];
 		CarGear gear{ CarGear::Neutral };
 		PxReal targetSpeed{ 50 };
-		PxReal acceleration{ 10 };
-		PxReal deacceleration{ 20 };
+		PxReal acceleration{ 20 };
+		PxReal deacceleration{ 50 };
 		WheelRotation wheelRotation{ WheelRotation::Neutral };
 		PxReal wheelAngleLimit{ PxPi / 4 }; // 45 degrees
 		PxReal rotationSpeed{ 10 };
-		
 
 		/// <summary>
 		/// Applies force appropriately to reach target speed if necessary.
@@ -288,15 +287,16 @@ namespace PhysicsEngine
 				wheels[wheelNumber]->Name("CarWheel" + wheelNumber);
 				wheels[wheelNumber]->Material(material);
 				wheels[wheelNumber]->SetupFiltering(FilterGroup::CAR, FilterGroup::CAR);
-				// Wheels suspension
+				// Wheels suspension - This was never implemented because the wheel motors prevent it from working.
+				// If I had more time, I would have created an intermediate actor that controlled suspension and connected to the wheel motors.
 				//wheelSprings[wheelNumber] = new DistanceJoint(
 					//body,
 					//PxTransform{ wheelOffsets[wheelNumber] },
 					//wheels[wheelNumber],
 					//PxTransform{ 0, 0, 0 }
 				//);
-				//wheelSprings[wheelNumber]->Damping(1'000);
-				//wheelSprings[wheelNumber]->Stiffness(30'000);
+				//wheelSprings[wheelNumber]->Damping(100);
+				//wheelSprings[wheelNumber]->Stiffness(1000);
 				// Wheel motors
 				wheelMotors[wheelNumber] = new RevoluteJoint{
 					body,
@@ -406,12 +406,20 @@ namespace PhysicsEngine
 		}
 	};
 
-
+	class Goal {
+		GoalPost* goalPost;
+	public:
+		Goal(Scene& scene, PxTransform pose, PxVec3 dimensions) {
+			goalPost = new GoalPost(dimensions, pose);
+			scene.Add(goalPost);
+		}
+	};
 
 	///Custom scene class
 	class MyScene : public Scene
 	{
 		Field* field;
+		Goal* goal;
 		
 		MySimulationEventCallback* my_callback;
 		
@@ -441,14 +449,19 @@ namespace PhysicsEngine
 			my_callback = new MySimulationEventCallback();
 			px_scene->setSimulationEventCallback(my_callback);
 
-			field = new Field(PxVec3{ 100, 2, 100 });
-			field->Color(color_palette[5]); // Green
+			field = new Field(PxVec3{ 48.76, 2, 91.44 }); // Dimensions of a football field
 			Add(field);
+			goal = new Goal(
+				*this,
+				PxTransform{ PxVec3{ 0, 0, 44 } },
+				PxVec3{ 7.32, 2*2.44, 2.44 }
+			);
+			
 
 			// Create ball
 			ball = new Sphere(
 				PxTransform{ PxVec3{ 0.0, 0.5, 0.5 } },
-				0.5,
+				1,
 				1);
 			ball->Color(color_palette[2]); // Watermelon
 			ball->Name("Ball");

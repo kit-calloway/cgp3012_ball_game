@@ -11,7 +11,7 @@ namespace PhysicsEngine
 	{
 	public:
 		//A plane with default paramters: XZ plane centred at (0,0,0)
-		Plane(PxVec3 normal=PxVec3(0.f, 1.f, 0.f), PxReal distance=0.f) 
+		Plane(PxVec3 normal = PxVec3(0.f, 1.f, 0.f), PxReal distance = 0.f)
 			: StaticActor(PxTransformFromPlaneEquation(PxPlane(normal, distance)))
 		{
 			CreateShape(PxPlaneGeometry());
@@ -26,9 +26,9 @@ namespace PhysicsEngine
 		// - pose in 0,0,0
 		// - dimensions: 1m
 		// - denisty: 1kg/m^3
-		Sphere(const PxTransform& pose=PxTransform(PxIdentity), PxReal radius=1.f, PxReal density=1.f) 
+		Sphere(const PxTransform& pose = PxTransform(PxIdentity), PxReal radius = 1.f, PxReal density = 1.f)
 			: DynamicActor(pose)
-		{ 
+		{
 			CreateShape(PxSphereGeometry(radius), density);
 		}
 	};
@@ -41,9 +41,9 @@ namespace PhysicsEngine
 		// - pose in 0,0,0
 		// - dimensions: 1m x 1m x 1m
 		// - denisty: 1kg/m^3
-		Box(const PxTransform& pose=PxTransform(PxIdentity), PxVec3 dimensions=PxVec3(.5f,.5f,.5f), PxReal density=1.f) 
+		Box(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(.5f, .5f, .5f), PxReal density = 1.f)
 			: DynamicActor(pose)
-		{ 
+		{
 			CreateShape(PxBoxGeometry(dimensions), density);
 		}
 	};
@@ -51,7 +51,7 @@ namespace PhysicsEngine
 	class Capsule : public DynamicActor
 	{
 	public:
-		Capsule(const PxTransform& pose=PxTransform(PxIdentity), PxVec2 dimensions=PxVec2(1.f,1.f), PxReal density=1.f) 
+		Capsule(const PxTransform& pose = PxTransform(PxIdentity), PxVec2 dimensions = PxVec2(1.f, 1.f), PxReal density = 1.f)
 			: DynamicActor(pose)
 		{
 			CreateShape(PxCapsuleGeometry(dimensions.x, dimensions.y), density);
@@ -63,7 +63,7 @@ namespace PhysicsEngine
 	{
 	public:
 		//constructor
-		Wheel(const PxReal radius, const PxReal thickness, const PxTransform& pose=PxTransform(PxIdentity), PxReal density=1.f)
+		Wheel(const PxReal radius, const PxReal thickness, const PxTransform& pose = PxTransform(PxIdentity), PxReal density = 1.f)
 			: DynamicActor(pose)
 		{
 			std::vector<PxVec3> verts;
@@ -89,7 +89,7 @@ namespace PhysicsEngine
 		{
 			PxDefaultMemoryOutputStream stream;
 
-			if(!GetCooking()->cookConvexMesh(mesh_desc, stream))
+			if (!GetCooking()->cookConvexMesh(mesh_desc, stream))
 				throw new Exception("ConvexMesh::CookMesh, cooking failed.");
 
 			PxDefaultMemoryInputData input(stream.getData(), stream.getSize());
@@ -103,15 +103,15 @@ namespace PhysicsEngine
 	{
 	public:
 		//constructor
-		TriangleMesh(const std::vector<PxVec3>& verts, const std::vector<PxU32>& trigs, const PxTransform& pose=PxTransform(PxIdentity))
+		TriangleMesh(const std::vector<PxVec3>& verts, const std::vector<PxU32>& trigs, const PxTransform& pose = PxTransform(PxIdentity))
 			: StaticActor(pose)
 		{
 			PxTriangleMeshDesc mesh_desc;
 			mesh_desc.points.count = (PxU32)verts.size();
 			mesh_desc.points.stride = sizeof(PxVec3);
 			mesh_desc.points.data = &verts.front();
-			mesh_desc.triangles.count = (PxU32)trigs.size()/3;
-			mesh_desc.triangles.stride = 3*sizeof(PxU32);
+			mesh_desc.triangles.count = (PxU32)trigs.size() / 3;
+			mesh_desc.triangles.stride = 3 * sizeof(PxU32);
 			mesh_desc.triangles.data = &trigs.front();
 
 			CreateShape(PxTriangleMeshGeometry(CookMesh(mesh_desc)));
@@ -122,7 +122,7 @@ namespace PhysicsEngine
 		{
 			PxDefaultMemoryOutputStream stream;
 
-			if(!GetCooking()->cookTriangleMesh(mesh_desc, stream))
+			if (!GetCooking()->cookTriangleMesh(mesh_desc, stream))
 				throw new Exception("TriangleMesh::CookMesh, cooking failed.");
 
 			PxDefaultMemoryInputData input(stream.getData(), stream.getSize());
@@ -155,7 +155,7 @@ namespace PhysicsEngine
 
 		PxReal Stiffness()
 		{
-			return ((PxDistanceJoint*)joint)->getStiffness();		
+			return ((PxDistanceJoint*)joint)->getStiffness();
 		}
 
 		void Damping(PxReal value)
@@ -180,13 +180,13 @@ namespace PhysicsEngine
 				px_actor0 = (PxRigidActor*)actor0->Get();
 
 			joint = PxRevoluteJointCreate(*GetPhysics(), px_actor0, localFrame0, (PxRigidActor*)actor1->Get(), localFrame1);
-			joint->setConstraintFlag(PxConstraintFlag::eVISUALIZATION,true);
+			joint->setConstraintFlag(PxConstraintFlag::eVISUALIZATION, true);
 		}
 
 		void DriveVelocity(PxReal value)
 		{
 			//wake up the attached actors
-			PxRigidDynamic *actor_0, *actor_1;
+			PxRigidDynamic* actor_0, * actor_1;
 			((PxRevoluteJoint*)joint)->getActors((PxRigidActor*&)actor_0, (PxRigidActor*&)actor_1);
 			if (actor_0)
 			{
@@ -224,6 +224,7 @@ namespace PhysicsEngine
 		CarBody(const PxTransform& pose = PxTransform(PxIdentity), PxReal density = 1)
 			: DynamicActor(pose)
 		{
+			Color(PxVec3{ 0, 0, 0.5 });
 			// Bottom Hull (Index 0)
 			CreateShape(
 				PxBoxGeometry{ PxVec3{ 0.9, 0.35, 2.25 } },
@@ -247,8 +248,6 @@ namespace PhysicsEngine
 	/// This class is used to quickly create the field the game is ran in
 	/// </summary>
 	class Field : public StaticActor {
-		
-
 	public:
 		Field(const PxVec3 dimensions, const PxTransform& pose = PxTransform{ 0, 0, 0 })
 			: StaticActor(
@@ -259,7 +258,7 @@ namespace PhysicsEngine
 		{
 			// Grass
 			CreateShape(PxPlaneGeometry{});
-			Color(PxVec3(210.f / 255.f, 128.f / 255.f, 210.f / 255.f));
+			Color(PxVec3(0, 0.5, 0));
 			auto grassMaterial = GetPhysics()->createMaterial(0.5, 0.4, 0.2); // Considered grass friction values
 			Material(grassMaterial);
 
@@ -280,6 +279,33 @@ namespace PhysicsEngine
 				CreateShape(PxBoxGeometry{ barrierDimensions[barrierIndex] });
 				PxTransform adjustedPose = PxTransformFromPlaneEquation(PxPlane{ PxVec3{ 0, 1, 0 }, 0 }) * barrierTransforms[barrierIndex];
 				GetShape(barrierIndex + 1)->setLocalPose(adjustedPose);
+				Color(PxVec3{ 0.5, 0.5, 0.5 }, barrierIndex + 1); // This sucks, and should be burned to the ground.
+			}
+		}
+	};
+
+	class GoalPost : public StaticActor {
+	public:
+		GoalPost(const PxVec3 dimensions, const PxTransform& pose = PxTransform{ 0, 0, 0 })
+			: StaticActor(pose)
+		{
+			// Barriers
+			const PxVec3 wallsDimensions[4]{
+				PxVec3{ dimensions.x / 2, dimensions.y / 2,            0.25f },
+				PxVec3{            0.25f, dimensions.y / 2, dimensions.z / 2 },
+				PxVec3{            0.25f, dimensions.y / 2, dimensions.z / 2 },
+				PxVec3{ dimensions.x / 2,             0.25, dimensions.z / 2 }
+			};
+			const PxTransform wallsTransforms[4]{
+				PxTransform{ PxVec3{                      0.0f,     dimensions.y / 2, dimensions.z / 2 - 0.25f } },
+				PxTransform{ PxVec3{ -dimensions.x / 2 + 0.25f,     dimensions.y / 2,                     0.0f } },
+				PxTransform{ PxVec3{  dimensions.x / 2 - 0.25f,     dimensions.y / 2,                     0.0f } },
+				PxTransform{ PxVec3{                      0.0f, dimensions.y - 0.25f,                     0.0f } },
+			};
+			for (int wallIndex = 0; wallIndex < 4; wallIndex++) {
+				CreateShape(PxBoxGeometry{ wallsDimensions[wallIndex] });
+				GetShape(wallIndex)->setLocalPose(wallsTransforms[wallIndex]);
+				Color(PxVec3{ 0.5, 0.5, 0.5 }, wallIndex);
 			}
 		}
 	};
