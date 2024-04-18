@@ -3,9 +3,7 @@
 build/
 obj/
 *.o
-*.exe
 .DS_Store
-Debug/
 Release/
 .vs/
 html/

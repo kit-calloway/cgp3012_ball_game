@@ -1,0 +1,56 @@
+﻿  Camera.cpp
+  GLFontRenderer.cpp
+  Renderer.cpp
+  PhysicsEngine.cpp
+  VisualDebugger.cpp
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\BasicActors.h(230,33): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\BasicActors.h(230,28): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\BasicActors.h(234,29): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\BasicActors.h(238,33): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\BasicActors.h(238,28): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\BasicActors.h(242,29): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\BasicActors.h(262,64): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\BasicActors.h(262,59): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(210,16): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(211,16): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(212,16): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(213,16): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(273,59): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(278,54): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(278,49): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(278,44): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(284,6): warning C4305: 'argument': truncation from 'double' to 'const physx::PxReal'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(283,6): warning C4305: 'argument': truncation from 'double' to 'const physx::PxReal'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(458,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(458,30): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(463,27): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(463,20): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(463,13): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(496,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  main.cpp
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\BasicActors.h(230,33): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\BasicActors.h(230,28): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\BasicActors.h(234,29): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\BasicActors.h(238,33): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\BasicActors.h(238,28): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\BasicActors.h(242,29): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\BasicActors.h(262,64): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\BasicActors.h(262,59): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(210,16): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(211,16): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(212,16): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(213,16): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(273,59): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(278,54): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(278,49): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(278,44): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(284,6): warning C4305: 'argument': truncation from 'double' to 'const physx::PxReal'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(283,6): warning C4305: 'argument': truncation from 'double' to 'const physx::PxReal'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(458,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(458,30): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(463,27): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(463,20): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(463,13): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Computing\source\repos\cgp3012_ball_game\Assessment 1\MyPhysicsEngine.h(496,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  Generating Code...
+  Assessment 1.vcxproj -> C:\Users\Computing\Source\Repos\cgp3012_ball_game\x64\Debug\Assessment 1.exe
